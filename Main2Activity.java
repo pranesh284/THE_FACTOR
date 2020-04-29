@@ -238,8 +238,7 @@ public class Main2Activity extends AppCompatActivity {
 
     private void set_scores() {
         text_score.setText(String.format(Locale.getDefault(), "Current score:%d", score));
-        text_streak.setText(String.format(Locale.getDefault(), "Current streak:%d", winning_streak
-        ));
+        text_streak.setText(String.format(Locale.getDefault(), "Current streak:%d", winning_streak));
     }
 
     private void finish_game() {
