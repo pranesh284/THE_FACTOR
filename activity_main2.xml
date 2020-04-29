@@ -15,10 +15,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="52dp"
+        android:freezesText="true"
         android:text="@string/options"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.468"
+        app:layout_constraintHorizontal_bias="0.465"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,6 +41,7 @@
             android:id="@+id/button1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:freezesText="true"
             android:layout_gravity="center"
             android:textSize="22sp" />
 
@@ -48,11 +50,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:freezesText="true"
             android:textSize="22sp" />
 
         <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/button3"
             android:layout_width="match_parent"
+            android:freezesText="true"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textSize="22sp" />
@@ -66,31 +70,34 @@
 
     </RadioGroup>
 
+
     <Button
         android:id="@+id/button_answer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="28dp"
+        android:freezesText="true"
         android:text="@string/check_answer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.499"
         app:layout_constraintStart_toStartOf="@+id/radiogroup"
         app:layout_constraintTop_toBottomOf="@+id/radiogroup" />
-
 
     <EditText
         android:id="@+id/text_getnum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="16dp"
+        android:autofillHints="@string/hint"
         android:background="@android:color/holo_blue_dark"
         android:ems="10"
-        android:autofillHints="@string/hint"
+        android:freezesText="true"
         android:hint="@string/hint"
         android:inputType="number"
         android:textColor="@android:color/black"
         android:textColorHint="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.471"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -98,21 +105,23 @@
         android:id="@+id/textView_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00:15"
-        android:textSize="40sp"
+        android:freezesText="true"
+        android:text="@string/time"
         android:textColor="@android:color/holo_purple"
+        android:textSize="40sp"
         app:layout_constraintBottom_toTopOf="@+id/radiogroup"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.518"
+        app:layout_constraintHorizontal_bias="0.621"
         app:layout_constraintStart_toEndOf="@+id/button_entervalue"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.616" />
+        app:layout_constraintVertical_bias="0.688" />
 
     <TextView
         android:id="@+id/textView_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="current_point"
+        android:freezesText="true"
+        android:text="@string/points"
         android:textColor="@android:color/holo_purple"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/radiogroup"
@@ -120,19 +129,20 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_entervalue"
-        app:layout_constraintVertical_bias="0.23" />
+        app:layout_constraintVertical_bias="0.895" />
 
     <TextView
         android:id="@+id/textView_streak"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="108dp"
-        android:text="streak"
+        android:layout_marginBottom="60dp"
+        android:freezesText="true"
+        android:text="@string/streak"
         android:textColor="@android:color/holo_purple"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/radiogroup"
         app:layout_constraintEnd_toEndOf="@+id/textView_score"
-        app:layout_constraintHorizontal_bias="0.319"
+        app:layout_constraintHorizontal_bias="0.34"
         app:layout_constraintStart_toStartOf="@+id/textView_score" />
 
 
