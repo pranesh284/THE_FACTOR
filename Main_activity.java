@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 
 public class MainActivity extends AppCompatActivity {
     public static final int KEY_INPUT = 1;
@@ -49,13 +51,14 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == KEY_INPUT) {
             if (resultCode == RESULT_OK) {
+                assert data != null;
                 streak = data.getIntExtra(Main2Activity.STREAK, 0);
                 score = data.getIntExtra(Main2Activity.SCORE, 0);
                 SharedPreferences preferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putInt(PREFS_SCORE, score);
                 editor.apply();
-                text_score.setText("Last game score:"+score);
+                text_score.setText(String.format(Locale.getDefault(), "Last game score:%d", score));
                 if (streak > highest_streak)
                     update_streak(editor);
             }
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         highest_streak = streak;
-        text_streak.setText("Highest WINNING Streak:" + highest_streak);
+        text_streak.setText(String.format(Locale.getDefault(), "Highest WINNING streak:%d", highest_streak));
         editor.putInt(PREFS_STREAK, streak);
         editor.apply();
     }
@@ -76,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         highest_streak = preferences.getInt(PREFS_STREAK, 0);
         score = preferences.getInt(PREFS_SCORE, 0);
-        text_score.setText("Last game score:" + score);
-        text_streak.setText("Highest WINNING Streak:" + highest_streak);
+        text_score.setText(String.format(Locale.getDefault(), "Last game score:%d", score));
+        text_streak.setText(String.format(Locale.getDefault(), "Highest WINNING streak:%d", highest_streak));
     }
 }
