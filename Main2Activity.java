@@ -1,10 +1,12 @@
 package com.example.the_factor;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,11 +23,17 @@ import static android.R.color.holo_green_dark;
 import static android.R.color.holo_red_dark;
 
 public class Main2Activity extends AppCompatActivity {
+    //string identifiers
     private static final long COUNTDOWN_MILLIS = 15000;
     public static final String STREAK = "winning_streak";
     public static final String SCORE = "score";
+    public static final String INV_SC0RE = "score";
+    public static final String INV_ANSWER = "answer";
+    public static final String INV_STREAK = "streak";
+    public static final String INV_COUNTDOWN_MILLIS = "count_down_left";
+    public static final String INV_J = "int_j";
 
-
+    //widgets
     private RadioButton radioButton1;
     private RadioButton radioButton2;
     private RadioButton radioButton3;
@@ -38,10 +46,10 @@ public class Main2Activity extends AppCompatActivity {
     private TextView text_streak;
     private Random random = new Random();
     private int answer;
-
-    private int score, winning_streak,j=0;
+    private Vibrator vibrator;
+    //stuff
+    private int score, winning_streak, j;
     private long back_pressed_time;
-
 
     private CountDownTimer countDownTimer;
     private long timeleft_millis;
@@ -61,37 +69,50 @@ public class Main2Activity extends AppCompatActivity {
         view = findViewById(R.id.view);
         text_score = findViewById(R.id.textView_score);
         text_streak = findViewById(R.id.textView_streak);
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        radioGroup = findViewById(R.id.radiogroup);
+        editText = findViewById(R.id.text_getnum);
         Button button = findViewById(R.id.button_entervalue);
-        score = 0;
-        winning_streak = 0;
+
+        if (savedInstanceState == null) {
+            score = 0;
+            j = 1;
+            winning_streak = 0;
+        }
+        if (savedInstanceState != null) {
+            answer = savedInstanceState.getInt(INV_ANSWER);
+            score = savedInstanceState.getInt(INV_SC0RE);
+            winning_streak = savedInstanceState.getInt(INV_STREAK);
+            timeleft_millis = savedInstanceState.getLong(INV_COUNTDOWN_MILLIS);
+            j = savedInstanceState.getInt(INV_J);
+
+            if (j == 0)
+                start_countdown();
+        }
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 timeleft_millis = COUNTDOWN_MILLIS;
-                editText = findViewById(R.id.text_getnum);
                 random = new Random();
                 answer = random.nextInt(3) + 1;
-                radioGroup = findViewById(R.id.radiogroup);
                 radioGroup.clearCheck();
                 if (editText.getText().toString().equals(""))
                     Toast.makeText(Main2Activity.this, "please enter the number", Toast.LENGTH_SHORT).show();
-                else if(!is_answered()||j==0)
-                {
+                else if (j > 0) {
                     int num = Integer.parseInt(editText.getText().toString());
                     create_options(num, answer);
                     restore();
                     start_countdown();
-                    j=1;
-                }
-                else
-                    Toast.makeText(Main2Activity.this,"Answer the previous question",Toast.LENGTH_SHORT).show();
+                    j = 0;
+                } else
+                    Toast.makeText(Main2Activity.this, "Answer the previous question", Toast.LENGTH_SHORT).show();
             }
         });
         Button button1 = findViewById(R.id.button_answer);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                j++;
                 show_option_color();
                 editText.setText(null);
             }
@@ -102,44 +123,30 @@ public class Main2Activity extends AppCompatActivity {
 
         int r1 = Math.abs(random.nextInt((factorial(n) + 100) - (factorial(n) - 100)) + (factorial(n) - 100));
         int r2 = Math.abs(random.nextInt((factorial(n) + 100) - (factorial(n) - 100)) + (factorial(n) - 100));
+        for (int i = 0; i <= 5; i++) {
+            if (r1 == r2)
+                r1 = Math.abs(random.nextInt((factorial(n) + 100) - (factorial(n) - 100)) + (factorial(n) - 100));
+            else if (r1 == factorial(n))
+                r1 = Math.abs(random.nextInt((factorial(n) + 100) - (factorial(n) - 100)) + (factorial(n) - 100));
+            else if (factorial(n) == r2)
+                r2 = Math.abs(random.nextInt((factorial(n) + 100) - (factorial(n) - 100)) + (factorial(n) - 100));
+        }
         switch (ans) {
             case 1:
                 radioButton1.setText(String.valueOf(Math.abs(factorial(n))));
-                for (int i = 0; i <= 5; i++) {
-                    if (r1 != r2) {
-                        radioButton2.setText(String.valueOf(r1));
-                        radioButton3.setText(String.valueOf(r2));
-                        break;
-                    } else {
-                        r1 = Math.abs(random.nextInt((factorial(n) + 100) - (factorial(n) - 100)) + (factorial(n) - 100));
-                    }
-                }
+                radioButton2.setText(String.valueOf(Math.abs(r1)));
+                radioButton3.setText(String.valueOf(Math.abs(r2)));
                 break;
             case 2:
                 radioButton2.setText(String.valueOf(Math.abs(factorial(n))));
-                for (int i = 0; i <= 5; i++) {
-                    if (r1 != r2) {
-                        radioButton1.setText(String.valueOf(r1));
-                        radioButton3.setText(String.valueOf(r2));
-                        break;
-                    } else {
-                        r1 = Math.abs(random.nextInt((factorial(n) + 100) - (factorial(n) - 100)) + (factorial(n) - 100));
-                    }
-                }
+                radioButton3.setText(String.valueOf(Math.abs(r2)));
+                radioButton1.setText(String.valueOf(Math.abs(r1)));
                 break;
             case 3:
                 radioButton3.setText(String.valueOf(Math.abs(factorial(n))));
-                for (int i = 0; i <= 5; i++) {
-                    if (r1 != r2) {
-                        radioButton2.setText(String.valueOf(r1));
-                        radioButton1.setText(String.valueOf(r2));
-                        break;
-                    } else {
-                        r1 = Math.abs(random.nextInt((factorial(n) + 100) - (factorial(n) - 100)) + (factorial(n) - 100));
-                    }
-                }
+                radioButton2.setText(String.valueOf(Math.abs(r2)));
+                radioButton1.setText(String.valueOf(Math.abs(r1)));
                 break;
-
         }
 
     }//creates options once the number is entered
@@ -156,9 +163,8 @@ public class Main2Activity extends AppCompatActivity {
     }//gets the factorial of number
 
     private void show_option_color() {
-
-        if (is_answered())
-        {
+        j++;
+        if (is_answered()) {
             radioButton1.setTextColor(getResources().getColor(holo_red_dark));
             radioButton2.setTextColor(getResources().getColor(holo_red_dark));
             radioButton3.setTextColor(getResources().getColor(holo_red_dark));
@@ -191,6 +197,7 @@ public class Main2Activity extends AppCompatActivity {
             view.setBackgroundColor(getResources().getColor(holo_red_dark));
             score -= 1;
             winning_streak = 0;
+            vibrator.vibrate(500);
         }
         set_scores();
     }//sets the background color after checking the answer
@@ -239,7 +246,7 @@ public class Main2Activity extends AppCompatActivity {
     private void set_scores() {
         text_score.setText(String.format(Locale.getDefault(), "Current score:%d", score));
         text_streak.setText(String.format(Locale.getDefault(), "Current streak:%d", winning_streak));
-    }
+    }//prints the scores
 
     private void finish_game() {
         Intent new_intent = new Intent();
@@ -248,7 +255,7 @@ public class Main2Activity extends AppCompatActivity {
         setResult(RESULT_OK, new_intent);
         finish();
 
-    }
+    }//returns the values and ends the activity
 
     @Override
     public void onBackPressed() {
@@ -258,11 +265,9 @@ public class Main2Activity extends AppCompatActivity {
             Toast.makeText(Main2Activity.this, "Press again to exit the game", Toast.LENGTH_SHORT).show();
         back_pressed_time = System.currentTimeMillis();
     }
-    private Boolean is_answered(){
-        if(radioButton1.isChecked() || radioButton2.isChecked() || radioButton3.isChecked())
-            return true;
-         else
-            return false;
+
+    private Boolean is_answered() {
+        return radioButton1.isChecked() || radioButton2.isChecked() || radioButton3.isChecked();
     }
 
     @Override
@@ -270,5 +275,15 @@ public class Main2Activity extends AppCompatActivity {
         super.onDestroy();
         if (countDownTimer != null)
             countDownTimer.cancel();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(INV_SC0RE, score);
+        outState.putInt(INV_STREAK, winning_streak);
+        outState.putLong(INV_COUNTDOWN_MILLIS, timeleft_millis);
+        outState.putInt(INV_ANSWER, answer);
+        outState.putInt(INV_J, j);
     }
 }
