@@ -23,6 +23,7 @@ import static android.R.color.holo_green_dark;
 import static android.R.color.holo_red_dark;
 
 public class Main2Activity extends AppCompatActivity {
+
     //string identifiers
     private static final long COUNTDOWN_MILLIS = 15000;
     public static final String STREAK = "winning_streak";
@@ -32,6 +33,7 @@ public class Main2Activity extends AppCompatActivity {
     public static final String INV_STREAK = "streak";
     public static final String INV_COUNTDOWN_MILLIS = "count_down_left";
     public static final String INV_J = "int_j";
+    public static final String INV_E = "int_e";
 
     //widgets
     private RadioButton radioButton1;
@@ -45,14 +47,15 @@ public class Main2Activity extends AppCompatActivity {
     private TextView text_score;
     private TextView text_streak;
     private Random random = new Random();
-    private int answer;
+    int[] arr;
     private Vibrator vibrator;
     //stuff
-    private int score, winning_streak, j;
+    private int score, winning_streak, j, c, e;
     private long back_pressed_time;
-
+    private int answer;
     private CountDownTimer countDownTimer;
     private long timeleft_millis;
+
 
     public Main2Activity() {
     }
@@ -73,6 +76,8 @@ public class Main2Activity extends AppCompatActivity {
         radioGroup = findViewById(R.id.radiogroup);
         editText = findViewById(R.id.text_getnum);
         Button button = findViewById(R.id.button_entervalue);
+        arr = new int[30];
+
 
         if (savedInstanceState == null) {
             score = 0;
@@ -85,10 +90,10 @@ public class Main2Activity extends AppCompatActivity {
             winning_streak = savedInstanceState.getInt(INV_STREAK);
             timeleft_millis = savedInstanceState.getLong(INV_COUNTDOWN_MILLIS);
             j = savedInstanceState.getInt(INV_J);
-
+            e = savedInstanceState.getInt(INV_E);
             if (j == 0)
                 start_countdown();
-        }
+        }//show options button
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,10 +105,16 @@ public class Main2Activity extends AppCompatActivity {
                     Toast.makeText(Main2Activity.this, "please enter the number", Toast.LENGTH_SHORT).show();
                 else if (j > 0) {
                     int num = Integer.parseInt(editText.getText().toString());
-                    create_options(num, answer);
-                    restore();
-                    start_countdown();
-                    j = 0;
+                    c = factor(num);
+                    if (c == 0)
+                        Toast.makeText(Main2Activity.this, "Enter a non prime number", Toast.LENGTH_SHORT).show();
+                    else {
+                        create_options(num);
+                        restore();
+                        start_countdown();
+                        j = 0;
+
+                    }
                 } else
                     Toast.makeText(Main2Activity.this, "Answer the previous question", Toast.LENGTH_SHORT).show();
             }
@@ -113,54 +124,61 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 j++;
-                show_option_color();
-                editText.setText(null);
+                if (e == 1) {
+                    show_option_color();
+                    editText.setText(null);
+                    e = 0;
+                }
             }
         });
     }
 
-    private void create_options(int n, int ans) {
-
-        int r1 = Math.abs(random.nextInt((factorial(n) + 100) - (factorial(n) - 100)) + (factorial(n) - 100));
-        int r2 = Math.abs(random.nextInt((factorial(n) + 100) - (factorial(n) - 100)) + (factorial(n) - 100));
-        for (int i = 0; i <= 5; i++) {
-            if (r1 == r2)
-                r1 = Math.abs(random.nextInt((factorial(n) + 100) - (factorial(n) - 100)) + (factorial(n) - 100));
-            else if (r1 == factorial(n))
-                r1 = Math.abs(random.nextInt((factorial(n) + 100) - (factorial(n) - 100)) + (factorial(n) - 100));
-            else if (factorial(n) == r2)
-                r2 = Math.abs(random.nextInt((factorial(n) + 100) - (factorial(n) - 100)) + (factorial(n) - 100));
+    private void create_options(int n) {
+        e = 1;
+        int ans_selected = random.nextInt(c);
+        int opt_ans = arr[ans_selected];
+        int opt_1 = Math.abs(random.nextInt((opt_ans + 10) - (opt_ans - 10)) + (opt_ans - 10));
+        for (int i = 0; i < 20; i++)
+            if (opt_1 == arr[i] || opt_1 == 1 || opt_1 == n || opt_1 == 0) {
+                opt_1 = Math.abs(random.nextInt((opt_ans + 10) - (opt_ans - 10)) + (opt_ans - 10));
+                i = -1;
+            }
+        int opt_2 = Math.abs(random.nextInt((opt_ans + 10) - (opt_ans - 10)) + (opt_ans - 10));
+        for (int i = 0; i < 20; i++)
+            if (opt_2 == arr[i] || opt_2 == 1 || opt_2 == n || opt_2 == 0) {
+                opt_2 = Math.abs(random.nextInt((opt_ans + 10) - (opt_ans - 10)) + (opt_ans - 10));
+                i = -1;
+            }
+        for (int i = 0; i < 10; i++) {
+            if (opt_1 == opt_2) {
+                opt_1 = Math.abs(random.nextInt((opt_ans + 10) - (opt_ans - 10)) + (opt_ans - 10));
+                for (i = 0; i < 20; i++)
+                    if (opt_1 == arr[i] || opt_1 == 1 || opt_1 == n || opt_1 == 0) {
+                        opt_1 = Math.abs(random.nextInt((opt_ans + 10) - (opt_ans - 10)) + (opt_ans - 10));
+                        i = -1;
+                    }
+            }
         }
-        switch (ans) {
+
+        switch (answer) {
             case 1:
-                radioButton1.setText(String.valueOf(Math.abs(factorial(n))));
-                radioButton2.setText(String.valueOf(Math.abs(r1)));
-                radioButton3.setText(String.valueOf(Math.abs(r2)));
+                radioButton1.setText(String.valueOf(Math.abs(opt_ans)));
+                radioButton2.setText(String.valueOf(Math.abs(opt_1)));
+                radioButton3.setText(String.valueOf(Math.abs(opt_2)));
                 break;
             case 2:
-                radioButton2.setText(String.valueOf(Math.abs(factorial(n))));
-                radioButton3.setText(String.valueOf(Math.abs(r2)));
-                radioButton1.setText(String.valueOf(Math.abs(r1)));
+                radioButton1.setText(String.valueOf(Math.abs(opt_1)));
+                radioButton2.setText(String.valueOf(Math.abs(opt_ans)));
+                radioButton3.setText(String.valueOf(Math.abs(opt_2)));
                 break;
             case 3:
-                radioButton3.setText(String.valueOf(Math.abs(factorial(n))));
-                radioButton2.setText(String.valueOf(Math.abs(r2)));
-                radioButton1.setText(String.valueOf(Math.abs(r1)));
+                radioButton1.setText(String.valueOf(Math.abs(opt_2)));
+                radioButton2.setText(String.valueOf(Math.abs(opt_1)));
+                radioButton3.setText(String.valueOf(Math.abs(opt_ans)));
                 break;
-        }
+        }//assigns options
 
     }//creates options once the number is entered
-
-    private static int factorial(int num) {
-        int fact = 1;
-        if (num == 0) {
-            return fact;
-        } else {
-            for (int i = 1; i <= num; i++)
-                fact = fact * i;
-            return fact;
-        }
-    }//gets the factorial of number
 
     private void show_option_color() {
         j++;
@@ -285,5 +303,16 @@ public class Main2Activity extends AppCompatActivity {
         outState.putLong(INV_COUNTDOWN_MILLIS, timeleft_millis);
         outState.putInt(INV_ANSWER, answer);
         outState.putInt(INV_J, j);
+        outState.putInt(INV_E, e);
+    }
+
+    private int factor(int n) {
+        int d = 0;
+        for (int i = 2; i <(n); i++)
+            if (n % i == 0) {
+                arr[d] = i;
+                d++;
+            }
+        return d;
     }
 }
